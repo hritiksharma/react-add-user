@@ -21,7 +21,7 @@ const AddUser = (props) => {
   const submitHandler = (event) => {
     event.preventDefault();
 
-    if (userName.trim().length === 0 && userAge.length === 0) {
+    if (userName.trim().length === 0) {
       console.log("Username is empty");
       setError({
         title: "invalid Input",
