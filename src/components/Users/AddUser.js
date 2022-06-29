@@ -7,11 +7,7 @@ import ErrorModel from "../UI/ErrorModel";
 const AddUser = (props) => {
   const [userName, setUserName] = useState("");
   const [userAge, setUserAge] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
-
-  const togglePopup = () => {
-    setIsOpen(!isOpen);
-  };
+  const [error, setError] = useState();
 
   const handleAddName = (event) => {
     console.log(event.target.value);
@@ -25,15 +21,20 @@ const AddUser = (props) => {
   const submitHandler = (event) => {
     event.preventDefault();
 
-    if (userName.length === 0) {
+    if (userName.trim().length === 0 && userAge.length === 0) {
       console.log("Username is empty");
-      if (isOpen) {
-        console.log("inside isOpen");
-        <ErrorModel
-          content={<> UserName is Empty </>}
-          handleclose={togglePopup}
-        />;
-      }
+      setError({
+        title: "invalid Input",
+        message: "Please enter a valid anme and age (non-empty values",
+      });
+      return;
+    }
+    if (+userAge < 1) {
+      console.log("userAge is less then 1");
+      setError({
+        title: "invalid age",
+        message: "Please enter a valid age (>0).",
+      });
       return;
     }
     const userData = { name: userName, age: userAge };
@@ -42,9 +43,19 @@ const AddUser = (props) => {
     setUserName("");
     setUserAge("");
   };
+  const handleSubmitError = () => {
+    setError();
+  };
 
   return (
-    <>
+    <div>
+      {error && (
+        <ErrorModel
+          title={error.title}
+          message={error.message}
+          handleSubmit={handleSubmitError}
+        />
+      )}
       <Card className={classes.input}>
         <form onSubmit={submitHandler}>
           <label htmlFor="username">Add Name</label>
@@ -66,7 +77,7 @@ const AddUser = (props) => {
           <Button type="submit">Add User</Button>
         </form>
       </Card>
-    </>
+    </div>
   );
 };
 
